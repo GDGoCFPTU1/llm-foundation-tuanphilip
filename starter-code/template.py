@@ -126,9 +126,26 @@ def call_gemini(
         Ensure your usage dictionary extracts 'input_tokens' and 'output_tokens' 
         from the response metadata (e.g. response.usage_metadata).
     """
-    # TODO: Initialize Gemini client, set config parameters, call generate_content,
-    #       measure latency, extract response text and usage metadata, and return the tuple.
-    raise NotImplementedError("Implement call_gemini")
+    from google import genai
+    from google.genai import types
+    client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
+    start = time.time()
+    config = types.GenerateContentConfig(
+        temperature=temperature,
+        top_p=top_p,
+        max_output_tokens=max_tokens
+    )
+    response = client.models.generate_content(
+        model=model,
+        contents=prompt,
+        config=config
+    )
+    latency = time.time() - start
+    response_text = response.text
+    input_tokens = response.usage_metadata.prompt_token_count
+    output_tokens = response.usage_metadata.candidates_token_count
+    usage = {"input_tokens": input_tokens, "output_tokens": output_tokens}
+    return response_text, latency, usage
 
 
 # ---------------------------------------------------------------------------
