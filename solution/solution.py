@@ -390,7 +390,7 @@ def format_comparison_table(results: list[dict]) -> str:
             model_name = {
                 "gpt4o": "GPT-4o",
                 "gpt4o_mini": "GPT-4o Mini",
-                "gemini_flash": "Gemini 2.5 Flash"
+                "gemini_flash": "Gemini-Flash"
             }[model_key]
             truncated_resp = model_data["response"][:50] + "..." if len(model_data["response"]) > 50 else model_data["response"]
             latency = f"{model_data['latency']:.2f}"
