@@ -13,6 +13,11 @@ import os
 import time
 from typing import Any, Callable
 
+import openai
+from google import genai
+from google.genai import types
+import anthropic
+
 # ---------------------------------------------------------------------------
 # Estimated costs per 1M INPUT & OUTPUT tokens (USD) as of March 2026
 # Vietnamese text generally consumes ~1.5x - 2.0x more tokens than English due to Unicode/diacritics.
@@ -65,8 +70,7 @@ def call_openai(
         client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
         # response.usage contains input_tokens and output_tokens (prompt_tokens/completion_tokens)
     """
-    from openai import OpenAI
-    client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+    client = openai.OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
     start = time.time()
     response = client.chat.completions.create(
         model=model,
@@ -126,8 +130,6 @@ def call_gemini(
         Ensure your usage dictionary extracts 'input_tokens' and 'output_tokens' 
         from the response metadata (e.g. response.usage_metadata).
     """
-    from google import genai
-    from google.genai import types
     client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
     start = time.time()
     config = types.GenerateContentConfig(
@@ -180,7 +182,6 @@ def call_anthropic(
         client = anthropic.Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY"))
         # response.usage contains input_tokens and output_tokens
     """
-    import anthropic
     client = anthropic.Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY"))
     start = time.time()
     response = client.messages.create(
@@ -274,7 +275,6 @@ def streaming_chatbot() -> None:
         - Check how to stream responses using client.chats or model.generate_content(..., stream=True).
         - Keep history limited to the last 3 turns to optimize context window and costs.
     """
-    from google import genai
     client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
     history = []
     
